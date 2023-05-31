@@ -56,12 +56,57 @@ Objetivo del ataque: inhabilitar sin destruir el puerto enemigo con vistas a pos
 
 ## Datos trabajo práctico
 
-link
+El objetivo de este trabajo final de Maestría es el diseño y desarrollo del software de vuelo para un nanosatélite. El MDQSAT-1 es un CubeSat de 0.5U que se encuentra siendo desarrollado por parte de la empresa Innova Space. Tal como establece el estándar, sus dimensiones no superan los 10cm x 10cm x 5cm y su peso es inferior a los 500g. Concebido como una prueba de concepto, la misión del MDQSAT-1 es validar diseños y componentes claves de la arquitectura de una plataforma satelital para una constelación de pequeños satélites, que brindará servicio de comunicaciones a dispositivos IoT.
 
-Muy breve descripción
+### Diagrama:
+
+![](arqui.jpg).
 
 ## Resolución
 
+### Reconnaissance
 
-  
+- [[T1591] 	Gather Victim Org Information](https://attack.mitre.org/techniques/T1591): Se estudia la información obtenida de fuentes abiertas y se da con la arquitectura de la solución (Satélite+nodos de GS).
 
+- [[T1590] Gather Victim Network Information ](https://attack.mitre.org/techniques/T1590)
+    - [[.004] Network Topology](https://attack.mitre.org/techniques/T1590/004) y [[.005] IP Addresses](https://attack.mitre.org/techniques/T1590/005): Se estudia la topología de la red y se detecta que se usan nodos remotos para la GS. Además, se detecta que se utiliza un servicio de VPN para establecer la comunicación con los nodos.
+
+### Weaponization
+
+- [[T1587] Develop Capabilities](https://attack.mitre.org/techniques/T1587)
+    - [[.001] Malware](https://attack.mitre.org/techniques/T1587/001): Se desarrolla un script que será instalado en los nodos de GS. Este script permite publicar mensajes en un broker MQTT, utilizando los certificados instalados en el sistema.
+
+### Delivery
+
+- [[T1566] Phishing](https://attack.mitre.org/techniques/T1566)
+    - [[.002] Spearphishing Link](https://attack.mitre.org/techniques/T1566/002): Se envía un correo a los desarrolladores haciéndose pasar por el servicio de VPN y pidiendo que se reestablezca la contraseña.
+
+- [[1078] Valid Accounts](https://attack.mitre.org/techniques/T1078)
+    - [[.003] Local Accounts](https://attack.mitre.org/techniques/T1078/003): Con la contraseña de acceso al servicio de VPN, mediante SSH se copia el exploit (backdoor) al objetivo.
+
+### Exploitation
+
+- [[T1059] Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059)
+    - [[.004] Unix Shell](https://attack.mitre.org/techniques/T1059/004): Se utiliza un backdoor de Linux para descargar un script desde un repositorio remoto, encargado de instalar el script de control final. 
+
+### Installation
+
+- [[T1547] Boot or Logon Autostart Execution](https://attack.mitre.org/techniques/T1547) 
+    - [[.013] XDG Autostart Entries](https://attack.mitre.org/techniques/T1547/006): Dado que en los nodos remotos se utiliza una distro GNU/Linux, durante la instalación del malware se hace uso del mecanismo proporcionado por XDG para autoconfigurarse en el inicio del sistema.
+
+### Command & Control
+
+- [[T1071] Application Layer Protocol](https://attack.mitre.org/techniques/T1071)
+    - [[.002] File Transfer Protocols](https://attack.mitre.org/techniques/T1071/002): El script descripto en la sección **Weaponization** utiliza el protocolo FTP para ser comandado por el atacante. De esta forma, se reduce el riesgo de ser detectado por herramientas de análisis de tráfico.
+
+### Actions on objectives
+
+- [[T0879] Damage to Property](https://attack.mitre.org/techniques/T0879)
+    - Se envian telecomandos a los nodos de usuario para afectar el funcionamiento de los mismos o desconfigurarlos.
+
+- [[T0831] Manipulation of Control](https://attack.mitre.org/techniques/T0831)
+    - Se envian telecomandos a los nodos de usuario para controlar los sistemas pertenecientes a los usuarios finales.
+
+- [[T0832] Manipulation of View](https://attack.mitre.org/techniques/T0832)
+    - Se publican datos falsos en el broker MQTT, simulando un mal funcionamiento en el satélite.
+    - Se publican datos falsos en el broker MQTT, simulando un funcionamiento incorrecto de los nodos de usuario.
