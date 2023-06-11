@@ -64,6 +64,10 @@ El objetivo de este trabajo final de Maestría es el diseño y desarrollo del so
 
 ## Resolución
 
+### Objectivo del ataque
+
+El objetivo del ataque es simular el mal funcionamiento de los nodos de usuario o incluso del mismo satélite, mediante la inyección de telemetría falsa en el sistema. Además, dada la capacidad bidireccional de las comunicaciones entre satélite y nodos de usuario, con este ataque sería posible enviar telecomandos a los nodos de usuario.
+
 ### Reconnaissance
 
 - [[T1591] 	Gather Victim Org Information](https://attack.mitre.org/techniques/T1591): Se estudia la información obtenida de fuentes abiertas y se da con la arquitectura de la solución (Satélite+nodos de GS).
